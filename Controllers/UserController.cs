@@ -1,29 +1,39 @@
+using System;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Configuration;
 using WorkshopWebApi.Models;
 using WorkshopWebApi.Providers;
 
 namespace WorkshopWebApi.Controllers
 {
     [Route("[controller]")]
+    [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly IUserProvider _userProvider;
+        private IUserProvider _userProvider;
         
+
 
         public UsersController(IUserProvider userProvider)
         {
             _userProvider = userProvider;
-          
+        
+
         }
+
+      
         [HttpGet]
+        [Authorize(Policy = Policies.Admin)]
         public IEnumerable<User> GetAllUsers()
         {
             return _userProvider.GetAll();
         }
 
         [HttpDelete]
-        [Route("(id)")]
+        [Authorize(Policy = Policies.Admin)]
+        [Route("{id}")]
         public IEnumerable<User> DeleteUser(int id)
         {
             _userProvider.DeleteUser(id);
@@ -31,28 +41,61 @@ namespace WorkshopWebApi.Controllers
 
         }
         [HttpPost]
+        [Authorize(Policy = Policies.Admin)]
         public void AddUser([FromBody]User user)
         {
             _userProvider.AddUser(user);
         }
         [HttpPut]
+        [Authorize(Policy = Policies.Admin)]
         [Route("{id}")]
-        public void UpdateUser(int id,[FromBody] User user)
+        public void UpdateUserAdmin(int id,[FromBody] User user)
         {
-            _userProvider.UpdateUser(id,user);
+            _userProvider.UpdateUserAdmin(id,user);
         }
 
-        [HttpPut]
+        [HttpPost]
+        [Authorize(Policy = Policies.Admin)]
         [Route("{id}/{roles}")]
-        public void UpdateRole(int id,[FromBody] Role role)
+        public void AddRole(int id,[FromBody] Role role)
         {
             _userProvider.AddRole(id,role);
         }
         [HttpDelete]
-        [Route("{id1}/roles/{id2}")]
+        [Authorize(Policy = Policies.Admin)]
+        [Route("{userid}/roles/{roleid}")]
         public void DeleteRole(int id1, int id2)
         {
             _userProvider.DeleteRole(id1, id2);
         }
+        [HttpGet]
+        [Route("{id}/{roles}")]
+        [Authorize(Policy = Policies.Admin)]
+        public IEnumerable<Role> GetAllUsersRole()
+        {
+            return _userProvider.GetAllRoles();
+        }
+        [HttpPatch]
+        [Route("{id}")]
+        [Authorize(Policy = Policies.User)]
+        public void UpdateUser(int id, [FromBody] User user)
+        {
+            _userProvider.UpdateUser(id, user);
+        }
+        [HttpGet("{startDate},{endDate}")]
+        [Route("getdate")]
+        [Authorize(Policy = Policies.Admin)]
+        public IEnumerable<User> SearchByInterval([FromQuery]DateTime startDate,[FromQuery] DateTime endDate)
+        {
+            return _userProvider.SearchByInterval(startDate,endDate);
+        }
+        [HttpGet("{role}")]
+        [Route("get")]
+        [Authorize(Policy = Policies.Admin)]
+        public IEnumerable<User> SearchByRole([FromQuery] string role)
+        {
+            return _userProvider.SearchByRole(role);
+        }
+
     }
 }

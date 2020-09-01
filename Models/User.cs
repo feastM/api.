@@ -9,6 +9,6 @@ namespace WorkshopWebApi.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public DateTime BirthDate { get; set; }
-        public List<Role> Role { get; set; }
+        public Role Role { get; set; }
     }
 }

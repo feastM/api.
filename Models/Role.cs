@@ -8,6 +8,6 @@ namespace WorkshopWebApi.Models
     public class Role
     {
         public int Id { get; set; }
-        public string Type { get; set; }
+        public string UserType { get; set; }
     }
 }
