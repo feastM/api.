@@ -63,7 +63,7 @@ namespace WorkshopWebApi.Controllers
         }
         [HttpDelete]
         [Authorize(Policy = Policies.Admin)]
-        [Route("{userid}/roles/{roleid}")]
+        [Route("{id1}/roles/{id2}")]
         public void DeleteRole(int id1, int id2)
         {
             _userProvider.DeleteRole(id1, id2);

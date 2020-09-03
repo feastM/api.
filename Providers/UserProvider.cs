@@ -90,8 +90,13 @@ namespace WorkshopWebApi.Providers
         }
         public void DeleteRole(int id1,int id2)
         {
-            var userRoleToBeDeleted = Users.First(role => role.Id == id1);
-            userRoleToBeDeleted.Role = null;
+            var userRoleToBeDeleted = Users.First(user => user.Id == id1);
+             if(userRoleToBeDeleted.Role.Id == id2)
+            {
+                userRoleToBeDeleted.Role = null;
+            }
+            
+           // userRoleToBeDeleted.Role = null;
         }
         public IEnumerable<Role> GetAllRoles()
         {
